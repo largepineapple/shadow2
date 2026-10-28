@@ -1,0 +1,184 @@
+{
+  "request_id": "campaign-tool_failure",
+  "theme": "Autumn community campaign",
+  "budget": 20,
+  "deadline": "2026-11-03T10:00:00+00:00",
+  "strategy": "basic",
+  "task_plan": [
+    {
+      "step_id": "estimate:basic",
+      "depends_on": [],
+      "status": "succeeded"
+    },
+    {
+      "step_id": "search",
+      "depends_on": [
+        "estimate:basic"
+      ],
+      "status": "succeeded"
+    },
+    {
+      "step_id": "script:basic",
+      "depends_on": [
+        "estimate:basic",
+        "search"
+      ],
+      "status": "failed"
+    },
+    {
+      "step_id": "save",
+      "depends_on": [
+        "script:basic"
+      ],
+      "status": "pending"
+    }
+  ],
+  "steps": [
+    {
+      "request_id": "campaign-tool_failure",
+      "step_key": "estimate:premium",
+      "tool": "estimate_cost",
+      "status": "succeeded",
+      "cost": 0,
+      "seconds": 0,
+      "attempts": 1,
+      "result": {
+        "available_strategies": {
+          "basic": {
+            "cost": 6,
+            "seconds": 180
+          },
+          "premium": {
+            "cost": 10,
+            "seconds": 600
+          }
+        },
+        "budget_gap": 0,
+        "deadline_gap_seconds": 0,
+        "estimated_total": 12,
+        "feasible": true,
+        "incurred_cost": 0,
+        "projected_finish": "2026-10-28T12:11:00+00:00",
+        "remaining_cost": 12,
+        "remaining_seconds": 660,
+        "simulated_elapsed_seconds": 0,
+        "strategy": "premium"
+      },
+      "error": null
+    },
+    {
+      "request_id": "campaign-tool_failure",
+      "step_key": "search",
+      "tool": "search_materials",
+      "status": "succeeded",
+      "cost": 2,
+      "seconds": 60,
+      "attempts": 1,
+      "result": {
+        "materials": [
+          {
+            "description": "Present a common audience problem and an invitation to participate.",
+            "id": "A02",
+            "tags": [
+              "general",
+              "community"
+            ],
+            "title": "Synthetic audience story"
+          }
+        ],
+        "source": "synthetic_local_catalog"
+      },
+      "error": null
+    },
+    {
+      "request_id": "campaign-tool_failure",
+      "step_key": "script:premium",
+      "tool": "generate_script",
+      "status": "failed",
+      "cost": 0,
+      "seconds": 0,
+      "attempts": 2,
+      "result": null,
+      "error": {
+        "code": "INJECTED_TOOL_FAILURE",
+        "message": "Explicit failure before execution; no simulated fee charged"
+      }
+    },
+    {
+      "request_id": "campaign-tool_failure",
+      "step_key": "estimate:basic",
+      "tool": "estimate_cost",
+      "status": "succeeded",
+      "cost": 0,
+      "seconds": 0,
+      "attempts": 1,
+      "result": {
+        "available_strategies": {
+          "basic": {
+            "cost": 6,
+            "seconds": 180
+          },
+          "premium": {
+            "cost": 10,
+            "seconds": 600
+          }
+        },
+        "budget_gap": 0,
+        "deadline_gap_seconds": 0,
+        "estimated_total": 8,
+        "feasible": true,
+        "incurred_cost": 2,
+        "projected_finish": "2026-10-28T12:04:00+00:00",
+        "remaining_cost": 6,
+        "remaining_seconds": 180,
+        "simulated_elapsed_seconds": 60,
+        "strategy": "basic"
+      },
+      "error": null
+    },
+    {
+      "request_id": "campaign-tool_failure",
+      "step_key": "script:basic",
+      "tool": "generate_script",
+      "status": "failed",
+      "cost": 0,
+      "seconds": 0,
+      "attempts": 1,
+      "result": null,
+      "error": {
+        "code": "INJECTED_TOOL_FAILURE",
+        "message": "Explicit failure before execution; no simulated fee charged"
+      }
+    }
+  ],
+  "cost_total": 2,
+  "simulated_elapsed_seconds": 60,
+  "status": "incomplete",
+  "reason": "Failed or pending steps remain; successful results retained",
+  "estimate": {
+    "strategy": "basic",
+    "estimated_total": 8,
+    "incurred_cost": 2,
+    "remaining_cost": 6,
+    "simulated_elapsed_seconds": 60,
+    "remaining_seconds": 180,
+    "projected_finish": "2026-10-28T12:04:00+00:00",
+    "budget_gap": 0,
+    "deadline_gap_seconds": 0,
+    "feasible": true,
+    "available_strategies": {
+      "premium": {
+        "cost": 10,
+        "seconds": 600
+      },
+      "basic": {
+        "cost": 6,
+        "seconds": 180
+      }
+    }
+  },
+  "plan_status": "not_saved",
+  "plan_id": null,
+  "saved_plan": null,
+  "published": false
+}

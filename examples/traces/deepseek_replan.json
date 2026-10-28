@@ -1,0 +1,599 @@
+{
+  "case_id": "campaign-replan",
+  "mode": "live",
+  "model": "deepseek-flash",
+  "started_at": "2026-10-28T13:11:35.046616+00:00",
+  "steps": [
+    {
+      "step": 1,
+      "action": "estimate_cost",
+      "arguments": {
+        "strategy": "premium"
+      },
+      "observation_summary": {
+        "ok": true,
+        "data": {
+          "strategy": "premium",
+          "estimated_total": 12,
+          "incurred_cost": 0,
+          "remaining_cost": 12,
+          "simulated_elapsed_seconds": 0,
+          "remaining_seconds": 660,
+          "projected_finish": "2026-10-28T12:11:00+00:00",
+          "budget_gap": 2,
+          "deadline_gap_seconds": 0,
+          "feasible": false,
+          "available_strategies": {
+            "premium": {
+              "cost": 10,
+              "seconds": 600
+            },
+            "basic": {
+              "cost": 6,
+              "seconds": 180
+            }
+          },
+          "task_plan": [
+            {
+              "step_id": "estimate:premium",
+              "depends_on": [],
+              "status": "succeeded"
+            },
+            {
+              "step_id": "search",
+              "depends_on": [
+                "estimate:premium"
+              ],
+              "status": "pending"
+            },
+            {
+              "step_id": "script:premium",
+              "depends_on": [
+                "estimate:premium",
+                "search"
+              ],
+              "status": "pending"
+            },
+            {
+              "step_id": "save",
+              "depends_on": [
+                "script:premium"
+              ],
+              "status": "pending"
+            }
+          ]
+        },
+        "error": null
+      },
+      "next_action": "estimate_cost",
+      "decision_basis": ""
+    },
+    {
+      "step": 2,
+      "action": "estimate_cost",
+      "arguments": {
+        "strategy": "basic"
+      },
+      "observation_summary": {
+        "ok": true,
+        "data": {
+          "strategy": "basic",
+          "estimated_total": 8,
+          "incurred_cost": 0,
+          "remaining_cost": 8,
+          "simulated_elapsed_seconds": 0,
+          "remaining_seconds": 240,
+          "projected_finish": "2026-10-28T12:04:00+00:00",
+          "budget_gap": 0,
+          "deadline_gap_seconds": 0,
+          "feasible": true,
+          "available_strategies": {
+            "premium": {
+              "cost": 10,
+              "seconds": 600
+            },
+            "basic": {
+              "cost": 6,
+              "seconds": 180
+            }
+          },
+          "task_plan": [
+            {
+              "step_id": "estimate:basic",
+              "depends_on": [],
+              "status": "succeeded"
+            },
+            {
+              "step_id": "search",
+              "depends_on": [
+                "estimate:basic"
+              ],
+              "status": "pending"
+            },
+            {
+              "step_id": "script:basic",
+              "depends_on": [
+                "estimate:basic",
+                "search"
+              ],
+              "status": "pending"
+            },
+            {
+              "step_id": "save",
+              "depends_on": [
+                "script:basic"
+              ],
+              "status": "pending"
+            }
+          ]
+        },
+        "error": null
+      },
+      "next_action": "search_materials",
+      "decision_basis": ""
+    },
+    {
+      "step": 3,
+      "action": "search_materials",
+      "arguments": {},
+      "observation_summary": {
+        "ok": true,
+        "data": {
+          "result": {
+            "materials": [
+              {
+                "id": "A02",
+                "tags": [
+                  "general",
+                  "community"
+                ],
+                "title": "Synthetic audience story",
+                "description": "Present a common audience problem and an invitation to participate."
+              }
+            ],
+            "source": "synthetic_local_catalog"
+          },
+          "reused": false,
+          "charged_now": 2
+        },
+        "error": null
+      },
+      "next_action": "generate_script",
+      "decision_basis": ""
+    },
+    {
+      "step": 4,
+      "action": "generate_script",
+      "arguments": {
+        "strategy": "basic"
+      },
+      "observation_summary": {
+        "ok": true,
+        "data": {
+          "result": {
+            "strategy": "basic",
+            "generator": "synthetic_template",
+            "material_ids": [
+              "A02"
+            ],
+            "script": {
+              "hook": "Discover Autumn community campaign",
+              "scenes": [
+                "Present a common audience problem and an invitation to participate."
+              ],
+              "call_to_action": "Join our Autumn community campaign activity"
+            },
+            "deliverables": [
+              "short video",
+              "caption"
+            ]
+          },
+          "reused": false,
+          "charged_now": 6
+        },
+        "error": null
+      },
+      "next_action": "save_plan",
+      "decision_basis": ""
+    },
+    {
+      "step": 5,
+      "action": "save_plan",
+      "arguments": {},
+      "observation_summary": {
+        "ok": true,
+        "data": {
+          "result": {
+            "plan_id": 1
+          },
+          "reused": false,
+          "charged_now": 0
+        },
+        "error": null
+      },
+      "next_action": "finish",
+      "decision_basis": ""
+    },
+    {
+      "step": 6,
+      "action": "finish",
+      "arguments": {
+        "decision_basis": "Premium estimate ($12) exceeded the $10 budget, so I switched to the feasible basic strategy (est. $8, ~240s, within deadline). Searched materials (A02), generated the basic synthetic script, and saved the local plan (plan_id 1). Total simulated cost: $8."
+      },
+      "observation_summary": {
+        "ok": true
+      },
+      "next_action": null,
+      "decision_basis": "Premium estimate ($12) exceeded the $10 budget, so I switched to the feasible basic strategy (est. $8, ~240s, within deadline). Searched materials (A02), generated the basic synthetic script, and saved the local plan (plan_id 1). Total simulated cost: $8."
+    }
+  ],
+  "published": false,
+  "clock_anchor": "2026-10-28T12:00:00+00:00",
+  "final_status": "completed",
+  "finished_at": "2026-10-28T13:12:10.240360+00:00",
+  "result": {
+    "request_id": "campaign-replan",
+    "theme": "Autumn community campaign",
+    "budget": 10,
+    "deadline": "2026-11-03T10:00:00+00:00",
+    "strategy": "basic",
+    "task_plan": [
+      {
+        "step_id": "estimate:basic",
+        "depends_on": [],
+        "status": "succeeded"
+      },
+      {
+        "step_id": "search",
+        "depends_on": [
+          "estimate:basic"
+        ],
+        "status": "succeeded"
+      },
+      {
+        "step_id": "script:basic",
+        "depends_on": [
+          "estimate:basic",
+          "search"
+        ],
+        "status": "succeeded"
+      },
+      {
+        "step_id": "save",
+        "depends_on": [
+          "script:basic"
+        ],
+        "status": "succeeded"
+      }
+    ],
+    "steps": [
+      {
+        "request_id": "campaign-replan",
+        "step_key": "estimate:premium",
+        "tool": "estimate_cost",
+        "status": "succeeded",
+        "cost": 0,
+        "seconds": 0,
+        "attempts": 1,
+        "result": {
+          "available_strategies": {
+            "basic": {
+              "cost": 6,
+              "seconds": 180
+            },
+            "premium": {
+              "cost": 10,
+              "seconds": 600
+            }
+          },
+          "budget_gap": 2,
+          "deadline_gap_seconds": 0,
+          "estimated_total": 12,
+          "feasible": false,
+          "incurred_cost": 0,
+          "projected_finish": "2026-10-28T12:11:00+00:00",
+          "remaining_cost": 12,
+          "remaining_seconds": 660,
+          "simulated_elapsed_seconds": 0,
+          "strategy": "premium"
+        },
+        "error": null
+      },
+      {
+        "request_id": "campaign-replan",
+        "step_key": "estimate:basic",
+        "tool": "estimate_cost",
+        "status": "succeeded",
+        "cost": 0,
+        "seconds": 0,
+        "attempts": 1,
+        "result": {
+          "available_strategies": {
+            "basic": {
+              "cost": 6,
+              "seconds": 180
+            },
+            "premium": {
+              "cost": 10,
+              "seconds": 600
+            }
+          },
+          "budget_gap": 0,
+          "deadline_gap_seconds": 0,
+          "estimated_total": 8,
+          "feasible": true,
+          "incurred_cost": 0,
+          "projected_finish": "2026-10-28T12:04:00+00:00",
+          "remaining_cost": 8,
+          "remaining_seconds": 240,
+          "simulated_elapsed_seconds": 0,
+          "strategy": "basic"
+        },
+        "error": null
+      },
+      {
+        "request_id": "campaign-replan",
+        "step_key": "search",
+        "tool": "search_materials",
+        "status": "succeeded",
+        "cost": 2,
+        "seconds": 60,
+        "attempts": 1,
+        "result": {
+          "materials": [
+            {
+              "description": "Present a common audience problem and an invitation to participate.",
+              "id": "A02",
+              "tags": [
+                "general",
+                "community"
+              ],
+              "title": "Synthetic audience story"
+            }
+          ],
+          "source": "synthetic_local_catalog"
+        },
+        "error": null
+      },
+      {
+        "request_id": "campaign-replan",
+        "step_key": "script:basic",
+        "tool": "generate_script",
+        "status": "succeeded",
+        "cost": 6,
+        "seconds": 180,
+        "attempts": 1,
+        "result": {
+          "deliverables": [
+            "short video",
+            "caption"
+          ],
+          "generator": "synthetic_template",
+          "material_ids": [
+            "A02"
+          ],
+          "script": {
+            "call_to_action": "Join our Autumn community campaign activity",
+            "hook": "Discover Autumn community campaign",
+            "scenes": [
+              "Present a common audience problem and an invitation to participate."
+            ]
+          },
+          "strategy": "basic"
+        },
+        "error": null
+      },
+      {
+        "request_id": "campaign-replan",
+        "step_key": "save",
+        "tool": "save_plan",
+        "status": "succeeded",
+        "cost": 0,
+        "seconds": 0,
+        "attempts": 1,
+        "result": {
+          "plan_id": 1
+        },
+        "error": null
+      }
+    ],
+    "cost_total": 8,
+    "simulated_elapsed_seconds": 240,
+    "status": "completed",
+    "reason": "Local content plan saved; nothing published",
+    "estimate": {
+      "strategy": "basic",
+      "estimated_total": 8,
+      "incurred_cost": 8,
+      "remaining_cost": 0,
+      "simulated_elapsed_seconds": 240,
+      "remaining_seconds": 0,
+      "projected_finish": "2026-10-28T12:04:00+00:00",
+      "budget_gap": 0,
+      "deadline_gap_seconds": 0,
+      "feasible": true,
+      "available_strategies": {
+        "premium": {
+          "cost": 10,
+          "seconds": 600
+        },
+        "basic": {
+          "cost": 6,
+          "seconds": 180
+        }
+      }
+    },
+    "plan_status": "saved",
+    "plan_id": 1,
+    "saved_plan": {
+      "budget": 10,
+      "cost_total": 8,
+      "deadline": "2026-11-03T10:00:00+00:00",
+      "request_id": "campaign-replan",
+      "simulated_elapsed_seconds": 240,
+      "steps": [
+        {
+          "attempts": 1,
+          "cost": 0,
+          "error": null,
+          "request_id": "campaign-replan",
+          "result": {
+            "available_strategies": {
+              "basic": {
+                "cost": 6,
+                "seconds": 180
+              },
+              "premium": {
+                "cost": 10,
+                "seconds": 600
+              }
+            },
+            "budget_gap": 2,
+            "deadline_gap_seconds": 0,
+            "estimated_total": 12,
+            "feasible": false,
+            "incurred_cost": 0,
+            "projected_finish": "2026-10-28T12:11:00+00:00",
+            "remaining_cost": 12,
+            "remaining_seconds": 660,
+            "simulated_elapsed_seconds": 0,
+            "strategy": "premium"
+          },
+          "seconds": 0,
+          "status": "succeeded",
+          "step_key": "estimate:premium",
+          "tool": "estimate_cost"
+        },
+        {
+          "attempts": 1,
+          "cost": 0,
+          "error": null,
+          "request_id": "campaign-replan",
+          "result": {
+            "available_strategies": {
+              "basic": {
+                "cost": 6,
+                "seconds": 180
+              },
+              "premium": {
+                "cost": 10,
+                "seconds": 600
+              }
+            },
+            "budget_gap": 0,
+            "deadline_gap_seconds": 0,
+            "estimated_total": 8,
+            "feasible": true,
+            "incurred_cost": 0,
+            "projected_finish": "2026-10-28T12:04:00+00:00",
+            "remaining_cost": 8,
+            "remaining_seconds": 240,
+            "simulated_elapsed_seconds": 0,
+            "strategy": "basic"
+          },
+          "seconds": 0,
+          "status": "succeeded",
+          "step_key": "estimate:basic",
+          "tool": "estimate_cost"
+        },
+        {
+          "attempts": 1,
+          "cost": 2,
+          "error": null,
+          "request_id": "campaign-replan",
+          "result": {
+            "materials": [
+              {
+                "description": "Present a common audience problem and an invitation to participate.",
+                "id": "A02",
+                "tags": [
+                  "general",
+                  "community"
+                ],
+                "title": "Synthetic audience story"
+              }
+            ],
+            "source": "synthetic_local_catalog"
+          },
+          "seconds": 60,
+          "status": "succeeded",
+          "step_key": "search",
+          "tool": "search_materials"
+        },
+        {
+          "attempts": 1,
+          "cost": 6,
+          "error": null,
+          "request_id": "campaign-replan",
+          "result": {
+            "deliverables": [
+              "short video",
+              "caption"
+            ],
+            "generator": "synthetic_template",
+            "material_ids": [
+              "A02"
+            ],
+            "script": {
+              "call_to_action": "Join our Autumn community campaign activity",
+              "hook": "Discover Autumn community campaign",
+              "scenes": [
+                "Present a common audience problem and an invitation to participate."
+              ]
+            },
+            "strategy": "basic"
+          },
+          "seconds": 180,
+          "status": "succeeded",
+          "step_key": "script:basic",
+          "tool": "generate_script"
+        },
+        {
+          "attempts": 1,
+          "cost": 0,
+          "error": null,
+          "request_id": "campaign-replan",
+          "result": {
+            "plan_id": 1
+          },
+          "seconds": 0,
+          "status": "succeeded",
+          "step_key": "save",
+          "tool": "save_plan"
+        }
+      ],
+      "strategy": "basic",
+      "task_plan": [
+        {
+          "depends_on": [],
+          "status": "succeeded",
+          "step_id": "estimate:basic"
+        },
+        {
+          "depends_on": [
+            "estimate:basic"
+          ],
+          "status": "succeeded",
+          "step_id": "search"
+        },
+        {
+          "depends_on": [
+            "estimate:basic",
+            "search"
+          ],
+          "status": "succeeded",
+          "step_id": "script:basic"
+        },
+        {
+          "depends_on": [
+            "script:basic"
+          ],
+          "status": "succeeded",
+          "step_id": "save"
+        }
+      ],
+      "theme": "Autumn community campaign"
+    },
+    "published": false
+  }
+}

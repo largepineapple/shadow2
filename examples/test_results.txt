@@ -1,0 +1,5 @@
+Command: python -m pytest -q
+Mode: offline/mock unit and integration tests
+Local dependency path: ../.deps (normal installation uses requirements.txt)
+.............................                                            [100%]
+29 passed in 0.53s

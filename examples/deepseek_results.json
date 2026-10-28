@@ -1,0 +1,287 @@
+{
+  "mode": "live",
+  "clock_anchor": "2026-10-28T12:00:00+00:00",
+  "cases": [
+    {
+      "name": "normal",
+      "input": "examples/inputs/normal.json",
+      "status": "completed",
+      "cost_total": 12,
+      "plan_id": 1,
+      "db_count": 1,
+      "model": "deepseek-flash",
+      "actions": [
+        "estimate_cost",
+        "search_materials",
+        "generate_script",
+        "save_plan",
+        "finish"
+      ],
+      "checks": {
+        "status": true,
+        "not_published": true,
+        "db_count": true,
+        "exit_code": true,
+        "ledger": true,
+        "expected_cost": true,
+        "loop_observed": true
+      },
+      "passed": true,
+      "elapsed_seconds": 28.261
+    },
+    {
+      "name": "replan",
+      "input": "examples/inputs/replan.json",
+      "status": "completed",
+      "cost_total": 8,
+      "plan_id": 1,
+      "db_count": 1,
+      "model": "deepseek-flash",
+      "actions": [
+        "estimate_cost",
+        "estimate_cost",
+        "search_materials",
+        "generate_script",
+        "save_plan",
+        "finish"
+      ],
+      "checks": {
+        "status": true,
+        "not_published": true,
+        "db_count": true,
+        "exit_code": true,
+        "ledger": true,
+        "expected_cost": true,
+        "replanned_12_to_8": true,
+        "loop_observed": true
+      },
+      "passed": true,
+      "elapsed_seconds": 35.545
+    },
+    {
+      "name": "missing_budget",
+      "input": "examples/inputs/missing_budget.json",
+      "status": "needs_information",
+      "cost_total": 0,
+      "plan_id": null,
+      "db_count": 0,
+      "model": "not_called",
+      "actions": [],
+      "checks": {
+        "status": true,
+        "not_published": true,
+        "db_count": true,
+        "exit_code": true,
+        "ledger": true,
+        "no_tools_or_model": true
+      },
+      "passed": true,
+      "elapsed_seconds": 0.228
+    },
+    {
+      "name": "missing_deadline",
+      "input": "examples/inputs/missing_deadline.json",
+      "status": "needs_information",
+      "cost_total": 0,
+      "plan_id": null,
+      "db_count": 0,
+      "model": "not_called",
+      "actions": [],
+      "checks": {
+        "status": true,
+        "not_published": true,
+        "db_count": true,
+        "exit_code": true,
+        "ledger": true,
+        "no_tools_or_model": true
+      },
+      "passed": true,
+      "elapsed_seconds": 0.144
+    },
+    {
+      "name": "tool_failure",
+      "input": "examples/inputs/tool_failure.json",
+      "status": "incomplete",
+      "cost_total": 2,
+      "plan_id": null,
+      "db_count": 0,
+      "model": "deepseek-flash",
+      "actions": [
+        "estimate_cost",
+        "search_materials",
+        "generate_script",
+        "generate_script",
+        "estimate_cost",
+        "generate_script",
+        "finish"
+      ],
+      "checks": {
+        "status": true,
+        "not_published": true,
+        "db_count": true,
+        "exit_code": true,
+        "ledger": true,
+        "expected_cost": true,
+        "loop_observed": true
+      },
+      "passed": true,
+      "elapsed_seconds": 39.719
+    },
+    {
+      "name": "over_budget",
+      "input": "examples/inputs/over_budget.json",
+      "status": "budget_exceeded",
+      "cost_total": 0,
+      "plan_id": null,
+      "db_count": 0,
+      "model": "deepseek-flash",
+      "actions": [
+        "estimate_cost",
+        "estimate_cost",
+        "finish"
+      ],
+      "checks": {
+        "status": true,
+        "not_published": true,
+        "db_count": true,
+        "exit_code": true,
+        "ledger": true,
+        "loop_observed": true
+      },
+      "passed": true,
+      "elapsed_seconds": 17.291
+    },
+    {
+      "name": "deadline",
+      "input": "examples/inputs/deadline.json",
+      "status": "deadline_exceeded",
+      "cost_total": 0,
+      "plan_id": null,
+      "db_count": 0,
+      "model": "deepseek-flash",
+      "actions": [
+        "estimate_cost",
+        "estimate_cost",
+        "finish"
+      ],
+      "checks": {
+        "status": true,
+        "not_published": true,
+        "db_count": true,
+        "exit_code": true,
+        "ledger": true,
+        "loop_observed": true
+      },
+      "passed": true,
+      "elapsed_seconds": 17.382
+    },
+    {
+      "name": "duplicate",
+      "input": "examples/inputs/normal.json",
+      "status": "completed",
+      "cost_total": 12,
+      "plan_id": 1,
+      "db_count": 1,
+      "model": "deepseek-flash",
+      "actions": [
+        "cache_hit"
+      ],
+      "checks": {
+        "status": true,
+        "not_published": true,
+        "db_count": true,
+        "exit_code": true,
+        "ledger": true,
+        "same_plan": true,
+        "no_recharge": true,
+        "existing": true
+      },
+      "passed": true,
+      "elapsed_seconds": 0.33
+    },
+    {
+      "name": "save_failure",
+      "input": "examples/inputs/save_failure.json",
+      "status": "save_failed",
+      "cost_total": 12,
+      "plan_id": null,
+      "db_count": 0,
+      "model": "deepseek-flash",
+      "actions": [
+        "estimate_cost",
+        "search_materials",
+        "generate_script",
+        "save_plan",
+        "save_plan",
+        "finish"
+      ],
+      "checks": {
+        "status": true,
+        "not_published": true,
+        "db_count": true,
+        "exit_code": true,
+        "ledger": true,
+        "expected_cost": true,
+        "loop_observed": true
+      },
+      "passed": true,
+      "elapsed_seconds": 34.065
+    },
+    {
+      "name": "resume_failed",
+      "input": "examples/inputs/resume.json",
+      "status": "incomplete",
+      "cost_total": 2,
+      "plan_id": null,
+      "db_count": 0,
+      "model": "deepseek-flash",
+      "actions": [
+        "estimate_cost",
+        "search_materials",
+        "generate_script",
+        "generate_script",
+        "estimate_cost",
+        "generate_script",
+        "finish"
+      ],
+      "checks": {
+        "status": true,
+        "not_published": true,
+        "db_count": true,
+        "exit_code": true,
+        "ledger": true,
+        "expected_cost": true,
+        "loop_observed": true
+      },
+      "passed": true,
+      "elapsed_seconds": 40.371
+    },
+    {
+      "name": "resume_completed",
+      "input": "examples/inputs/resume.json",
+      "status": "completed",
+      "cost_total": 8,
+      "plan_id": 1,
+      "db_count": 1,
+      "model": "deepseek-flash",
+      "actions": [
+        "generate_script",
+        "save_plan",
+        "finish"
+      ],
+      "checks": {
+        "status": true,
+        "not_published": true,
+        "db_count": true,
+        "exit_code": true,
+        "ledger": true,
+        "search_reused": true,
+        "paid_once": true,
+        "loop_observed": true
+      },
+      "passed": true,
+      "elapsed_seconds": 17.744
+    }
+  ],
+  "elapsed_seconds": 231.095
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "A01",
+    "tags": [
+      "general",
+      "launch"
+    ],
+    "title": "Synthetic product demonstration",
+    "description": "Show the central benefit with a before and after scene."
+  },
+  {
+    "id": "A02",
+    "tags": [
+      "general",
+      "community"
+    ],
+    "title": "Synthetic audience story",
+    "description": "Present a common audience problem and an invitation to participate."
+  }
+]

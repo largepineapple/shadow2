@@ -1,0 +1,167 @@
+{
+  "request_id": "campaign-save_failure",
+  "theme": "Autumn community campaign",
+  "budget": 20,
+  "deadline": "2026-11-03T10:00:00+00:00",
+  "strategy": "premium",
+  "task_plan": [
+    {
+      "step_id": "estimate:premium",
+      "depends_on": [],
+      "status": "succeeded"
+    },
+    {
+      "step_id": "search",
+      "depends_on": [
+        "estimate:premium"
+      ],
+      "status": "succeeded"
+    },
+    {
+      "step_id": "script:premium",
+      "depends_on": [
+        "estimate:premium",
+        "search"
+      ],
+      "status": "succeeded"
+    },
+    {
+      "step_id": "save",
+      "depends_on": [
+        "script:premium"
+      ],
+      "status": "failed"
+    }
+  ],
+  "steps": [
+    {
+      "request_id": "campaign-save_failure",
+      "step_key": "estimate:premium",
+      "tool": "estimate_cost",
+      "status": "succeeded",
+      "cost": 0,
+      "seconds": 0,
+      "attempts": 1,
+      "result": {
+        "available_strategies": {
+          "basic": {
+            "cost": 6,
+            "seconds": 180
+          },
+          "premium": {
+            "cost": 10,
+            "seconds": 600
+          }
+        },
+        "budget_gap": 0,
+        "deadline_gap_seconds": 0,
+        "estimated_total": 12,
+        "feasible": true,
+        "incurred_cost": 0,
+        "projected_finish": "2026-10-28T12:11:00+00:00",
+        "remaining_cost": 12,
+        "remaining_seconds": 660,
+        "simulated_elapsed_seconds": 0,
+        "strategy": "premium"
+      },
+      "error": null
+    },
+    {
+      "request_id": "campaign-save_failure",
+      "step_key": "search",
+      "tool": "search_materials",
+      "status": "succeeded",
+      "cost": 2,
+      "seconds": 60,
+      "attempts": 1,
+      "result": {
+        "materials": [
+          {
+            "description": "Present a common audience problem and an invitation to participate.",
+            "id": "A02",
+            "tags": [
+              "general",
+              "community"
+            ],
+            "title": "Synthetic audience story"
+          }
+        ],
+        "source": "synthetic_local_catalog"
+      },
+      "error": null
+    },
+    {
+      "request_id": "campaign-save_failure",
+      "step_key": "script:premium",
+      "tool": "generate_script",
+      "status": "succeeded",
+      "cost": 10,
+      "seconds": 600,
+      "attempts": 1,
+      "result": {
+        "deliverables": [
+          "short video",
+          "caption",
+          "storyboard"
+        ],
+        "generator": "synthetic_template",
+        "material_ids": [
+          "A02"
+        ],
+        "script": {
+          "call_to_action": "Join our Autumn community campaign activity",
+          "hook": "Discover Autumn community campaign",
+          "scenes": [
+            "Present a common audience problem and an invitation to participate."
+          ]
+        },
+        "strategy": "premium"
+      },
+      "error": null
+    },
+    {
+      "request_id": "campaign-save_failure",
+      "step_key": "save",
+      "tool": "save_plan",
+      "status": "failed",
+      "cost": 0,
+      "seconds": 0,
+      "attempts": 2,
+      "result": null,
+      "error": {
+        "code": "INJECTED_TOOL_FAILURE",
+        "message": "Explicit failure before execution; no simulated fee charged"
+      }
+    }
+  ],
+  "cost_total": 12,
+  "simulated_elapsed_seconds": 660,
+  "status": "save_failed",
+  "reason": "Save tool failed; successful previous steps retained",
+  "estimate": {
+    "strategy": "premium",
+    "estimated_total": 12,
+    "incurred_cost": 12,
+    "remaining_cost": 0,
+    "simulated_elapsed_seconds": 660,
+    "remaining_seconds": 0,
+    "projected_finish": "2026-10-28T12:11:00+00:00",
+    "budget_gap": 0,
+    "deadline_gap_seconds": 0,
+    "feasible": true,
+    "available_strategies": {
+      "premium": {
+        "cost": 10,
+        "seconds": 600
+      },
+      "basic": {
+        "cost": 6,
+        "seconds": 180
+      }
+    }
+  },
+  "plan_status": "not_saved",
+  "plan_id": null,
+  "saved_plan": null,
+  "published": false
+}

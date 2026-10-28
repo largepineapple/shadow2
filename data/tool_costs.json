@@ -1,0 +1,24 @@
+{
+  "estimate_cost": {
+    "cost": 0,
+    "seconds": 0
+  },
+  "search_materials": {
+    "cost": 2,
+    "seconds": 60
+  },
+  "generate_script": {
+    "premium": {
+      "cost": 10,
+      "seconds": 600
+    },
+    "basic": {
+      "cost": 6,
+      "seconds": 180
+    }
+  },
+  "save_plan": {
+    "cost": 0,
+    "seconds": 0
+  }
+}

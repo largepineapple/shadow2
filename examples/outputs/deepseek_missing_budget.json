@@ -1,0 +1,14 @@
+{
+  "request_id": "campaign-missing_budget",
+  "status": "needs_information",
+  "missing_fields": [
+    "budget"
+  ],
+  "reason": "Provide budget and deadline; no tools executed",
+  "task_plan": [],
+  "steps": [],
+  "cost_total": 0,
+  "plan_status": "not_saved",
+  "plan_id": null,
+  "published": false
+}

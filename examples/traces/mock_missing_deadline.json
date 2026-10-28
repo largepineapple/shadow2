@@ -1,0 +1,24 @@
+{
+  "case_id": "campaign-missing_deadline",
+  "mode": "mock",
+  "model": "not_called",
+  "started_at": "2026-10-28T13:10:22.000947+00:00",
+  "steps": [],
+  "published": false,
+  "final_status": "needs_information",
+  "finished_at": "2026-10-28T13:10:22.001947+00:00",
+  "result": {
+    "request_id": "campaign-missing_deadline",
+    "status": "needs_information",
+    "missing_fields": [
+      "deadline"
+    ],
+    "reason": "Provide budget and deadline; no tools executed",
+    "task_plan": [],
+    "steps": [],
+    "cost_total": 0,
+    "plan_status": "not_saved",
+    "plan_id": null,
+    "published": false
+  }
+}
