@@ -2,7 +2,7 @@
 
 帮助运营人员在预算与截止时间约束下完成内容活动方案。Python 3.11+ CLI、原生 Agent Loop、DeepSeek/OpenAI 兼容工具调用、SQLite 状态持久化。数据、工具费用和耗时均为合成值，仅保存本地方案，不执行发布或实际采购。
 
-**验证结果：29项自动化测试通过；mock与live验收各11/11通过。live套件中8个实际模型执行路径，另3个为缺输入或缓存的无模型路径。**
+**本轮验证：35项自动化测试通过，mock案例11/11通过。历史live验收11/11通过（8个实际模型路径，3个缺输入或缓存路径）；本轮没有重新调用DeepSeek，原始live记录保持不变。**
 
 评审入口：[验收报告](docs/03-evaluation.md)、[费用表](data/tool_costs.json)、[示例输入](examples/inputs/)、[自动生成 Trace](examples/traces/)。
 
@@ -49,7 +49,7 @@ estimate.estimated_total = 已发生费用 + 当前选定方案尚未成功步�
 
 ## 状态、依赖与恢复
 
-工具顺序由模型决定，服务端强制依赖：有效估算 → 素材检索成功 → 选定策略脚本成功 → 保存。每个收费动作及保存前重新复核总预算与截止时间，模型无法修改输入约束。返回 task_plan（依赖与步骤状态）、steps（真实结果、错误、次数、费用）、cost_total、estimate（预算/时间缺口）、plan_status/plan_id/saved_plan 或未完成原因。
+工具顺序由模型决定，服务端强制依赖：有效估算 → 素材检索成功 → 选定策略脚本成功 → 保存。每个收费动作及保存前重新复核总预算与截止时间，模型无法修改输入约束。返回 task_plan（依赖与步骤状态）、steps（真实结果、错误、次数、费用）、cost_total、estimate（预算/时间缺口、clock_mode、current_time）、plan_status/plan_id/saved_plan 或未完成原因。blocking_reasons 同时列出当前预算、截止时间、当前计划工具错误等阻断原因；顶层status仍为摘要，不能替代该数组。成功替代方案不受已弃用策略的历史失败阻断，历史失败仍保留在steps与Trace中。
 
 步骤状态 pending/succeeded/failed；顶层 completed/needs_information/budget_exceeded/deadline_exceeded/incomplete/save_failed/request_conflict。completed 只表示本地方案保存。published 始终 false。
 
@@ -66,10 +66,12 @@ python -m src.main --mode mock --input examples/inputs/resume.json --db resume.s
 
 ## 时间与证据边界
 
-默认按当前 UTC 墙钟 + 已完成步骤模拟耗时 + 剩余模拟耗时计算预计完成时间，不实际 sleep。--now 可显式指定固定模拟钟锚点。examples.run_cases 为可复现性使用 2026-10-28T12:00:00Z；Trace started_at/finished_at 仍是真实运行时刻，业务截止时间检验是模拟的，不是已执行真实制作的证明。
+两种模式都按“当前时刻 + 剩余模拟耗时”计算预计完成时间，不实际 sleep。默认实时模式的当前时刻为当前UTC墙钟，不再加已完成步骤耗时；--now模拟模式的当前时刻为固定模拟起点 + SQLite账本中已完成步骤的模拟耗时，因此模拟起点 + 已消耗 + 剩余仅累计一次。续跑时实时模式读取新的墙钟，模拟模式需沿用同一个--now起点。examples.run_cases 为可复现性使用 2026-10-28T12:00:00Z；Trace started_at/finished_at 仍是真实运行时刻，业务截止时间检验是模拟的，不是已执行真实制作的证明。
 
 runner 使用临时数据库，正常与重复场景共享 DB，失败与续跑场景共享 DB；输出、Trace 和汇总自动生成。缺输入场景不调用模型；已保存方案重复场景为应用缓存命中，Trace 标记 cache_hit，不能当作一次真实模型决策。真实模型验证结果和失败情况以 docs/03-evaluation.md 为准。
 
 ## 已知限制
 
 单进程本地演示，无生产身份鉴权、外部素材系统、真实发布/采购。业务时间和费用是模拟值；候选策略只有 premium/basic；脚本为合成模板；单个请求在工具异常后可能因模型选择不同而产生不同轨迹。跨进程恢复依靠 SQLite，无法对真实远程计费 API 提供分布式 exactly-once。个人贡献、投入时间与主观反思保留给候选人本人填写。
+
+历史DeepSeek记录来自初始提交dbb174e，不含本轮新增的blocking_reasons/clock_mode/current_time字段；不得事后补写为新版本的live结果。新增时间语义和多重失败字段由本轮35项离线测试验证。

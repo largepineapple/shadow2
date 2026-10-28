@@ -13,9 +13,10 @@ def fail(code, message, **details):
 
 
 class Tools:
-    def __init__(self, request, storage, clock=None, inject_failure=None, failure_mode='once'):
+    def __init__(self, request, storage, clock=None, inject_failure=None, failure_mode='once', simulation_start=None):
         self.request, self.storage = request, storage
         self.clock = clock or (lambda: datetime.now(timezone.utc))
+        self.simulation_start = simulation_start
         self.inject_failure, self.failure_mode = inject_failure, failure_mode
         self.save_status = 'not_saved'
         root = Path(__file__).resolve().parents[1] / 'data'
@@ -44,12 +45,17 @@ class Tools:
                 remaining_cost += fee['cost']
                 remaining_seconds += fee['seconds']
         total = spent + remaining_cost
-        projected = self.clock() + timedelta(seconds=elapsed + remaining_seconds)
+        # Both modes project from a current instant; wall time never re-adds completed work.
+        current = (self.simulation_start + timedelta(seconds=elapsed)
+                   if self.simulation_start is not None else self.clock())
+        projected = current + timedelta(seconds=remaining_seconds)
         budget_gap = max(0, total - self.request['budget'])
         deadline_gap = max(0, int((projected - parse_time(self.request['deadline'])).total_seconds() + 0.999999))
         return {'strategy': strategy, 'estimated_total': total, 'incurred_cost': spent,
                 'remaining_cost': remaining_cost, 'simulated_elapsed_seconds': elapsed,
                 'remaining_seconds': remaining_seconds, 'projected_finish': projected.isoformat(),
+                'clock_mode': 'simulation' if self.simulation_start is not None else 'wall_clock',
+                'current_time': current.isoformat(),
                 'budget_gap': budget_gap, 'deadline_gap_seconds': deadline_gap,
                 'feasible': budget_gap == 0 and deadline_gap == 0,
                 'available_strategies': self.costs['generate_script']}

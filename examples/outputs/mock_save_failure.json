@@ -54,6 +54,8 @@
           }
         },
         "budget_gap": 0,
+        "clock_mode": "simulation",
+        "current_time": "2026-10-28T12:00:00+00:00",
         "deadline_gap_seconds": 0,
         "estimated_total": 12,
         "feasible": true,
@@ -138,6 +140,17 @@
   "simulated_elapsed_seconds": 660,
   "status": "save_failed",
   "reason": "Save tool failed; successful previous steps retained",
+  "blocking_reasons": [
+    {
+      "code": "TOOL_FAILURE",
+      "step_id": "save",
+      "tool": "save_plan",
+      "error": {
+        "code": "INJECTED_TOOL_FAILURE",
+        "message": "Explicit failure before execution; no simulated fee charged"
+      }
+    }
+  ],
   "estimate": {
     "strategy": "premium",
     "estimated_total": 12,
@@ -146,6 +159,8 @@
     "simulated_elapsed_seconds": 660,
     "remaining_seconds": 0,
     "projected_finish": "2026-10-28T12:11:00+00:00",
+    "clock_mode": "simulation",
+    "current_time": "2026-10-28T12:11:00+00:00",
     "budget_gap": 0,
     "deadline_gap_seconds": 0,
     "feasible": true,

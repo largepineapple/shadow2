@@ -30,20 +30,22 @@ def main():
         trace.value['case_id'] = request['request_id']
         if missing:
             result = {'request_id': request['request_id'], 'status': 'needs_information', 'missing_fields': missing,
+                      'blocking_reasons': [{'code': 'MISSING_INFORMATION', 'fields': missing}],
                       'reason': 'Provide budget and deadline; no tools executed', 'task_plan': [], 'steps': [],
                       'cost_total': 0, 'plan_status': 'not_saved', 'plan_id': None, 'published': False}
         else:
             store = Storage(args.db)
             store.bind(request, args.mode)
             fixed = parse_time(args.now) if args.now else None
-            tools = Tools(request, store, clock=(lambda: fixed) if fixed else None,
+            tools = Tools(request, store, simulation_start=fixed,
                           inject_failure=args.inject_failure, failure_mode=args.failure_mode)
             client = MockPolicy(tools) if args.mode == 'mock' else LiveClient()
             trace.value['model'] = client.model
-            trace.value['clock_anchor'] = args.now or 'wall_clock_utc_plus_simulated_elapsed'
+            trace.value['clock_anchor'] = args.now or 'wall_clock_utc'
             result = Agent(tools, client, trace, args.max_steps, args.max_tool_calls).run()
     except Exception as exc:
         result = {'status': 'request_conflict' if 'REQUEST_CONFLICT' in str(exc) else 'incomplete',
+                  'blocking_reasons': [{'code': 'REQUEST_ERROR', 'message': str(exc)}],
                   'reason': str(exc), 'plan_status': 'not_saved', 'published': False}
     finally:
         if store:

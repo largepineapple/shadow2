@@ -1,4 +1,5 @@
 import json
+from datetime import timedelta
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 import pytest
@@ -16,12 +17,13 @@ def request(name='normal'):
     return json.loads(Path(f'examples/inputs/{name}.json').read_text(encoding='utf-8'))
 
 
-def setup(tmp_path, name='normal', failure=None, failure_mode='once'):
+def setup(tmp_path, name='normal', failure=None, failure_mode='once', clock=None):
     r, missing = validate_request(request(name))
     assert not missing
     store = Storage(str(tmp_path / 'test.sqlite'))
     store.bind(r, 'mock')
-    return Tools(r, store, clock=lambda: NOW, inject_failure=failure, failure_mode=failure_mode)
+    return Tools(r, store, clock=clock, simulation_start=None if clock else NOW,
+                 inject_failure=failure, failure_mode=failure_mode)
 
 
 def run(tools, **limits):
@@ -40,6 +42,7 @@ def test_scenarios(tmp_path,name,status,cost):
     assert result['status']==status
     assert result['cost_total']==cost
     assert result['published'] is False
+    assert bool(result['blocking_reasons']) == (status!='completed')
     assert bool(result['saved_plan']) == (status=='completed')
     if name=='replan':
         quotes=[s['observation_summary']['data'] for s in trace.value['steps'] if s['action']=='estimate_cost']
@@ -136,6 +139,7 @@ def test_limits_preserve_work(tmp_path,steps,calls):
     tools=setup(tmp_path)
     result,_=run(tools,max_steps=steps,max_tool_calls=calls)
     assert result['status']=='incomplete' and 'limit' in result['reason']
+    assert any(r['code']=='EXECUTION_INCOMPLETE' for r in result['blocking_reasons'])
     if steps==3:
         assert result['cost_total']==12
         assert tools._steps()['script:premium']['status']=='succeeded'
@@ -179,11 +183,12 @@ def test_untrusted_finish_cannot_claim_success(tmp_path):
 
 
 def test_deadline_rechecked_after_partial_success(tmp_path):
-    tools=setup(tmp_path)
+    current=[NOW]
+    tools=setup(tmp_path,clock=lambda:current[0])
     tools.request['deadline']='2026-10-28T12:05:00+00:00'
     tools.execute('estimate_cost',{'strategy':'basic'})
     assert tools.execute('search_materials',{})['ok']
-    tools.clock=lambda: NOW.replace(minute=5)
+    current[0]=NOW.replace(minute=5)
     result=tools.execute('generate_script',{'strategy':'basic'})
     assert result['error']['code']=='DEADLINE_EXCEEDED'
     assert tools.snapshot()['cost_total']==2
@@ -196,4 +201,80 @@ def test_invalid_tool_arguments_are_structured(tmp_path):
     tools=setup(tmp_path)
     assert tools.execute('estimate_cost',{'strategy':[]})['error']['code']=='INVALID_STRATEGY'
     assert tools.execute('shell',{'code':'anything'})['error']['code']=='INVALID_ARGUMENT'
+    tools.storage.close()
+
+
+@pytest.mark.parametrize('advance',[60,120])
+def test_advancing_wall_clock_does_not_double_count_completed_work(tmp_path,advance):
+    current=[NOW]
+    tools=setup(tmp_path,clock=lambda:current[0])
+    initial=tools.execute('estimate_cost',{'strategy':'basic'})['data']
+    assert parse_time(initial['projected_finish'])==NOW+timedelta(seconds=240)
+    assert tools.execute('search_materials',{})['ok']
+    current[0]=NOW+timedelta(seconds=advance)
+    quote=tools._quote('basic')
+    assert quote['clock_mode']=='wall_clock'
+    assert quote['simulated_elapsed_seconds']==60
+    assert quote['remaining_seconds']==180
+    assert parse_time(quote['projected_finish'])==current[0]+timedelta(seconds=180)
+    tools.storage.close()
+
+
+def test_simulation_clock_uses_anchor_and_ledger_on_resume(tmp_path):
+    tools=setup(tmp_path)
+    tools.execute('estimate_cost',{'strategy':'basic'})
+    tools.execute('search_materials',{})
+    resumed=Tools(tools.request,tools.storage,simulation_start=NOW,clock=lambda:NOW+timedelta(hours=1))
+    quote=resumed._quote('basic')
+    assert quote['clock_mode']=='simulation'
+    assert parse_time(quote['current_time'])==NOW+timedelta(seconds=60)
+    assert parse_time(quote['projected_finish'])==NOW+timedelta(seconds=240)
+    tools.storage.close()
+
+
+def test_wall_clock_exact_deadline_allows_remaining_work(tmp_path):
+    current=[NOW]
+    tools=setup(tmp_path,clock=lambda:current[0])
+    tools.request['deadline']=(NOW+timedelta(seconds=240)).isoformat()
+    assert tools.execute('estimate_cost',{'strategy':'basic'})['data']['feasible']
+    assert tools.execute('search_materials',{})['ok']
+    current[0]=NOW+timedelta(seconds=60)
+    assert tools.execute('generate_script',{'strategy':'basic'})['ok']
+    current[0]=NOW+timedelta(seconds=240)
+    assert tools.execute('save_plan',{})['ok']
+    assert tools.snapshot()['cost_total']==8
+    tools.storage.close()
+
+
+def test_multiple_blocking_reasons_preserve_tool_error_and_constraints(tmp_path):
+    current=[NOW]
+    r,_=validate_request(request('replan')|{'deadline':(NOW+timedelta(seconds=3000)).isoformat()})
+    store=Storage(str(tmp_path/'multiple.sqlite'))
+    store.bind(r,'mock')
+    tools=Tools(r,store,clock=lambda:current[0],inject_failure='save_plan',failure_mode='always')
+    run(tools)
+    current[0]=NOW+timedelta(seconds=3500)
+    tools.execute('estimate_cost',{'strategy':'premium'})
+    result=Agent(tools,None,Trace('mock','test','multi')).result()
+    reasons={r['code']:r for r in result['blocking_reasons']}
+    assert result['status']=='budget_exceeded'
+    assert reasons['BUDGET_EXCEEDED']['budget_gap']==8
+    assert reasons['DEADLINE_EXCEEDED']['deadline_gap_seconds']==1100
+    assert reasons['TOOL_FAILURE']['step_id']=='save'
+    assert reasons['TOOL_FAILURE']['error']['code']=='INJECTED_TOOL_FAILURE'
+    assert result['cost_total']==8
+    tools.storage.close()
+
+
+def test_superseded_failure_does_not_block_successful_alternative(tmp_path):
+    tools=setup(tmp_path,failure='generate_script')
+    run(tools)
+    tools.inject_failure=None
+    tools.execute('estimate_cost',{'strategy':'basic'})
+    assert tools.execute('generate_script',{'strategy':'basic'})['ok']
+    assert tools.execute('save_plan',{})['ok']
+    result=Agent(tools,None,Trace('mock','test','alternative')).result()
+    assert result['status']=='completed'
+    assert result['blocking_reasons']==[]
+    assert any(s['step_key']=='script:premium' and s['status']=='failed' for s in result['steps'])
     tools.storage.close()

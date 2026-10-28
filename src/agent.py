@@ -58,7 +58,21 @@ class Agent:
             status, reason_default = 'save_failed', 'Save tool failed; successful previous steps retained'
         else:
             status, reason_default = 'incomplete', 'Failed or pending steps remain; successful results retained'
+        blockers = []
+        if not saved:
+            if quote and quote['budget_gap']:
+                blockers.append({'code': 'BUDGET_EXCEEDED', 'budget_gap': quote['budget_gap']})
+            if quote and quote['deadline_gap_seconds']:
+                blockers.append({'code': 'DEADLINE_EXCEEDED', 'deadline_gap_seconds': quote['deadline_gap_seconds']})
+            active_steps = {s['step_id'] for s in state['task_plan']}
+            blockers.extend({'code': 'TOOL_FAILURE', 'step_id': s['step_key'], 'tool': s['tool'], 'error': s['error']}
+                            for s in failed if s['step_key'] in active_steps)
+            if not blockers:
+                blockers.append({'code': 'PENDING_STEPS', 'step_ids': [s['step_id'] for s in state['task_plan'] if s['status'] != 'succeeded']})
+        if forced:
+            blockers.append({'code': 'EXECUTION_INCOMPLETE', 'message': reason})
         return {**state, 'status': forced or status, 'reason': reason or reason_default,
+                'blocking_reasons': blockers,
                 'estimate': quote, 'plan_status': self.tools.save_status if saved else 'not_saved',
                 'plan_id': saved['plan_id'] if saved else None,
                 'saved_plan': saved['content'] if saved else None, 'published': False}

@@ -27,7 +27,7 @@
         "loop_observed": true
       },
       "passed": true,
-      "elapsed_seconds": 0.355
+      "elapsed_seconds": 0.274
     },
     {
       "name": "replan",
@@ -56,7 +56,7 @@
         "loop_observed": true
       },
       "passed": true,
-      "elapsed_seconds": 0.339
+      "elapsed_seconds": 0.16
     },
     {
       "name": "missing_budget",
@@ -76,7 +76,7 @@
         "no_tools_or_model": true
       },
       "passed": true,
-      "elapsed_seconds": 0.303
+      "elapsed_seconds": 0.174
     },
     {
       "name": "missing_deadline",
@@ -96,7 +96,7 @@
         "no_tools_or_model": true
       },
       "passed": true,
-      "elapsed_seconds": 0.145
+      "elapsed_seconds": 0.211
     },
     {
       "name": "tool_failure",
@@ -122,7 +122,7 @@
         "loop_observed": true
       },
       "passed": true,
-      "elapsed_seconds": 0.346
+      "elapsed_seconds": 0.187
     },
     {
       "name": "over_budget",
@@ -146,7 +146,7 @@
         "loop_observed": true
       },
       "passed": true,
-      "elapsed_seconds": 0.336
+      "elapsed_seconds": 0.154
     },
     {
       "name": "deadline",
@@ -170,7 +170,7 @@
         "loop_observed": true
       },
       "passed": true,
-      "elapsed_seconds": 0.356
+      "elapsed_seconds": 0.274
     },
     {
       "name": "duplicate",
@@ -194,7 +194,7 @@
         "existing": true
       },
       "passed": true,
-      "elapsed_seconds": 0.279
+      "elapsed_seconds": 0.258
     },
     {
       "name": "save_failure",
@@ -221,7 +221,7 @@
         "loop_observed": true
       },
       "passed": true,
-      "elapsed_seconds": 0.306
+      "elapsed_seconds": 0.246
     },
     {
       "name": "resume_failed",
@@ -247,7 +247,7 @@
         "loop_observed": true
       },
       "passed": true,
-      "elapsed_seconds": 0.278
+      "elapsed_seconds": 0.28
     },
     {
       "name": "resume_completed",
@@ -273,8 +273,8 @@
         "loop_observed": true
       },
       "passed": true,
-      "elapsed_seconds": 0.271
+      "elapsed_seconds": 0.181
     }
   ],
-  "elapsed_seconds": 3.328
+  "elapsed_seconds": 2.412
 }

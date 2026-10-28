@@ -4,6 +4,14 @@
   "missing_fields": [
     "budget"
   ],
+  "blocking_reasons": [
+    {
+      "code": "MISSING_INFORMATION",
+      "fields": [
+        "budget"
+      ]
+    }
+  ],
   "reason": "Provide budget and deadline; no tools executed",
   "task_plan": [],
   "steps": [],

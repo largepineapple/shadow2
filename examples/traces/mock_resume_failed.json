@@ -2,7 +2,7 @@
   "case_id": "campaign-resume",
   "mode": "mock",
   "model": "deterministic-mock-no-LLM",
-  "started_at": "2026-10-28T13:10:23.874401+00:00",
+  "started_at": "2026-10-28T13:56:17.562980+00:00",
   "steps": [
     {
       "step": 1,
@@ -20,6 +20,8 @@
           "simulated_elapsed_seconds": 0,
           "remaining_seconds": 660,
           "projected_finish": "2026-10-28T12:11:00+00:00",
+          "clock_mode": "simulation",
+          "current_time": "2026-10-28T12:00:00+00:00",
           "budget_gap": 0,
           "deadline_gap_seconds": 0,
           "feasible": true,
@@ -130,7 +132,7 @@
   "published": false,
   "clock_anchor": "2026-10-28T12:00:00+00:00",
   "final_status": "incomplete",
-  "finished_at": "2026-10-28T13:10:23.893402+00:00",
+  "finished_at": "2026-10-28T13:56:17.585973+00:00",
   "result": {
     "request_id": "campaign-resume",
     "theme": "Autumn community campaign",
@@ -187,6 +189,8 @@
             }
           },
           "budget_gap": 0,
+          "clock_mode": "simulation",
+          "current_time": "2026-10-28T12:00:00+00:00",
           "deadline_gap_seconds": 0,
           "estimated_total": 12,
           "feasible": true,
@@ -242,6 +246,17 @@
     "simulated_elapsed_seconds": 60,
     "status": "incomplete",
     "reason": "Failed or pending steps remain; successful results retained",
+    "blocking_reasons": [
+      {
+        "code": "TOOL_FAILURE",
+        "step_id": "script:premium",
+        "tool": "generate_script",
+        "error": {
+          "code": "INJECTED_TOOL_FAILURE",
+          "message": "Explicit failure before execution; no simulated fee charged"
+        }
+      }
+    ],
     "estimate": {
       "strategy": "premium",
       "estimated_total": 12,
@@ -250,6 +265,8 @@
       "simulated_elapsed_seconds": 60,
       "remaining_seconds": 600,
       "projected_finish": "2026-10-28T12:11:00+00:00",
+      "clock_mode": "simulation",
+      "current_time": "2026-10-28T12:01:00+00:00",
       "budget_gap": 0,
       "deadline_gap_seconds": 0,
       "feasible": true,
